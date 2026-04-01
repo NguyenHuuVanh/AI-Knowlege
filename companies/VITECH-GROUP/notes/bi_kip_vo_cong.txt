@@ -1,0 +1,19 @@
+//start
+npx nx start twenty-server
+npx nx worker twenty-server
+npx nx start twenty-front
+
+//migration
+npx nx typecheck twenty-server
+npx nx build twenty-server --skip-nx-cache
+npx nx command twenty-server -- workspace:sync-metadata --verbose
+
+//reset db
+npx nx database:reset twenty-server
+
+//docker
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
+
+// regíter cron
+npx nx run twenty-server:command cron:register:all
